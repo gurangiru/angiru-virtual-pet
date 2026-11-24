@@ -9,33 +9,36 @@
 :root{--shell:#e94c54;--shell-dark:#b92f3b;--key:#ffd64a;--ink:#49334d;--lcd:#b9c8a2;--lcd-dark:#263a39;--pink:#f7dce9}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 10%,#fff 0 2px,transparent 3px),linear-gradient(145deg,#d8efff,#f9e5f0 55%,#d8f3ed);background-size:34px 34px,cover;color:var(--ink);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;display:flex;justify-content:center;padding:24px 14px 36px}
 main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-spacing:.18em;font-weight:900;color:#9b6b91}.intro h1{margin:5px 0;font-size:clamp(1.8rem,6vw,2.5rem);color:#8c4d85}.intro p{margin:0 auto 16px;max-width:390px;font-size:.92rem;color:#765c78}
-.device{position:relative;margin:12px auto 18px;width:min(100%,410px);padding:22px 22px 25px;background:var(--shell);border:5px solid rgba(255,255,255,.38);border-radius:43% 43% 39% 39% / 22% 22% 30% 30%;box-shadow:inset -9px -12px 0 rgba(80,20,35,.13),inset 7px 8px 0 rgba(255,255,255,.2),0 16px 28px #6c527044;transform:rotate(-1deg)}
-.device:before{content:"";position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:68px;height:25px;background:var(--shell);border:5px solid rgba(255,255,255,.3);border-bottom:0;border-radius:22px 22px 0 0}
-.brand{font-weight:1000;font-size:clamp(1.15rem,4vw,1.45rem);letter-spacing:.04em;color:#fff2b5;text-shadow:2px 2px 0 #65416d,-1px -1px 0 #65416d;margin:0 0 13px;transform:rotate(-2deg)}
+.device{position:relative;margin:10px auto 16px;width:min(100%,390px);padding:20px 17px 22px;background:var(--shell);border:5px solid rgba(255,255,255,.38);border-radius:39% 39% 35% 35% / 17% 17% 23% 23%;box-shadow:inset -8px -10px 0 rgba(80,20,35,.13),inset 7px 8px 0 rgba(255,255,255,.2),0 13px 24px #6c527044}
+.device:before{content:"";position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:62px;height:21px;background:var(--shell);border:5px solid rgba(255,255,255,.3);border-bottom:0;border-radius:20px 20px 0 0}
+.brand{font-weight:1000;font-size:clamp(1.05rem,4vw,1.35rem);letter-spacing:.03em;color:#fff2b5;text-shadow:2px 2px 0 #65416d,-1px -1px 0 #65416d;margin:0 0 10px}
 .brand span{color:#b7f3db}
-.screen-frame{background:#51434d;padding:10px;border-radius:19px;box-shadow:inset 0 3px 5px #211a28,0 3px 0 #ffffff55}
-.screen{position:relative;overflow:hidden;min-height:265px;border:4px solid #71816e;border-radius:9px;background:repeating-linear-gradient(0deg,#b9c8a2 0 3px,#b3c29c 3px 4px);color:var(--lcd-dark);padding:10px 12px;box-shadow:inset 0 0 18px #596b5533;image-rendering:pixelated}
-.screen-top{display:flex;justify-content:space-between;font:700 .68rem monospace;opacity:.8;border-bottom:1px dashed #52634d;padding-bottom:5px}
-.pet-stage{height:145px;display:grid;place-items:center;position:relative}
-.pet{width:150px;height:140px;image-rendering:pixelated;filter:drop-shadow(3px 3px 0 #62735b);animation:bob 1.8s steps(2,end) infinite}
-@keyframes bob{50%{transform:translateY(-5px)}}
-.pet.sleeping{animation:none;transform:translateY(8px) rotate(8deg)}
+.screen-controls{display:flex;align-items:center;justify-content:center;gap:7px}
+.screen-frame{flex:1;min-width:0;background:#51434d;padding:7px;border-radius:17px;box-shadow:inset 0 3px 5px #211a28,0 3px 0 #ffffff55}
+.screen{position:relative;overflow:hidden;min-height:228px;border:4px solid #71816e;border-radius:9px;background:repeating-linear-gradient(0deg,#b9c8a2 0 3px,#b3c29c 3px 4px);color:var(--lcd-dark);padding:8px 9px;box-shadow:inset 0 0 18px #596b5533;image-rendering:pixelated}
+.screen-top{display:flex;justify-content:space-between;font:700 .65rem monospace;opacity:.8;border-bottom:1px dashed #52634d;padding-bottom:4px}
+.menu-display{font:900 .66rem monospace;text-align:center;letter-spacing:.08em;padding:5px 2px 0;color:#344b43}
+.menu-display span{display:inline-block;min-width:85px;padding:2px 8px;border:1px solid #60735b;border-radius:3px;background:#cbd5b5}
+.pet-stage{height:113px;display:grid;place-items:center;position:relative}
+.pet{width:125px;height:116px;image-rendering:pixelated;filter:drop-shadow(3px 3px 0 #62735b);animation:bob 1.8s steps(2,end) infinite}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.pet.sleeping{animation:none;transform:translateY(7px) rotate(8deg)}
 .pet.sick{filter:grayscale(.6) drop-shadow(3px 3px 0 #62735b)}
 .pet-face{font:700 .75rem monospace}
-.screen-bottom{display:flex;justify-content:space-between;gap:5px;font:700 .65rem monospace;border-top:1px dashed #52634d;padding-top:6px}
-.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}
-.meter{font:700 .58rem monospace;text-align:left}.meter-line{height:7px;border:1px solid #435640;margin-top:3px;background:#dce5c9}.meter-fill{height:100%;background:#526d50;transition:width .25s}
-.message{font:700 .72rem monospace;min-height:18px;margin-top:7px}
-.shell-label{font-size:.7rem;font-weight:900;color:#6f303c;margin:10px 0 8px;letter-spacing:.04em}
-.controls{display:flex;justify-content:space-between;align-items:center;padding:0 12px;gap:8px}
-.round-key{border:0;cursor:pointer;background:var(--key);color:#754d28;font-weight:1000;box-shadow:inset -3px -4px 0 #d99e30,0 2px 0 #ffffff66;transition:transform .1s}
+.screen-bottom{display:flex;justify-content:space-between;gap:5px;font:700 .62rem monospace;border-top:1px dashed #52634d;padding-top:5px}
+.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:7px}
+.meter{font:700 .53rem monospace;text-align:left}.meter-line{height:6px;border:1px solid #435640;margin-top:3px;background:#dce5c9}.meter-fill{height:100%;background:#526d50;transition:width .25s}
+.message{font:700 .65rem monospace;min-height:16px;margin-top:5px}
+.shell-label{font-size:.65rem;font-weight:900;color:#6f303c;margin:9px 0 5px;letter-spacing:.04em}
+.round-key{border:0;cursor:pointer;background:var(--key);color:#754d28;font-weight:1000;box-shadow:inset -3px -4px 0 #d99e30,0 2px 0 #ffffff66;transition:transform .1s;flex:none}
 .round-key:active{transform:translateY(3px);box-shadow:inset -2px -2px 0 #d99e30}
-.arrow{width:48px;height:45px;border-radius:40% 55% 48% 45%;font-size:1.25rem}
-.action-keys{display:flex;justify-content:center;gap:22px;margin-top:14px}
-.action-wrap{display:grid;justify-items:center;gap:4px;font-size:.6rem;font-weight:1000;color:#692f3b}
-.action{width:53px;height:39px;border-radius:45% 45% 55% 55%;font-size:.7rem}
+.arrow{width:37px;height:42px;border-radius:43% 52% 48% 45%;font-size:1.05rem;padding:0}
+.action-keys{display:flex;justify-content:center;gap:20px;margin-top:11px}
+.action-wrap{display:grid;justify-items:center;gap:3px;font-size:.57rem;font-weight:1000;color:#692f3b}
+.action{width:47px;height:34px;border-radius:45% 45% 55% 55%;font-size:.65rem}
 .action:nth-child(1){background:#ffcf62}
-.key-help{font-size:.72rem;color:#6f5872;margin:10px auto 0;max-width:330px;line-height:1.5}
+.key-help{font-size:.7rem;color:#6f5872;margin:9px auto 0;max-width:330px;line-height:1.45}
+@media(max-width:380px){.device{padding:18px 12px 20px}.screen{min-height:218px}.screen-controls{gap:5px}.arrow{width:32px;height:38px}.pet-stage{height:105px}.pet{width:116px;height:108px}.action-keys{gap:15px}}
 .panel{background:#ffffffb8;border:1px solid #fff;border-radius:18px;padding:14px;margin:12px auto;max-width:410px;box-shadow:0 6px 18px #745c7814}
 .panel h2{font-size:1rem;margin:0 0 10px;color:#8c4d85}
 .settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.85rem;font-weight:700}
@@ -51,8 +54,11 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
  <header class="intro"><div class="eyebrow">UM PEQUENO AMIGO PARA CUIDAR</div><h1>Angiru Virtual Pet <span aria-hidden="true">♡</span></h1><p>Um companheirinho de bolso inspirado nos bichinhos virtuais dos anos 2000.</p></header>
  <section class="device" id="device" aria-label="Bichinho virtual">
   <div class="brand">Raku<span>♥</span>raku DinoKun</div>
-  <div class="screen-frame"><div class="screen">
+  <div class="screen-controls">
+   <button class="round-key arrow" id="prev" aria-label="Opção anterior">◀</button>
+   <div class="screen-frame"><div class="screen">
    <div class="screen-top"><span id="pet-name-screen">DINO</span><span id="clock">00:00</span></div>
+   <div class="menu-display">MENU　<span id="selected-action">COMIDA</span></div>
    <div class="pet-stage">
     <svg id="pet-art" class="pet" viewBox="0 0 160 145" role="img" aria-label="Seu dinossaurinho">
      <g fill="#344b43">
@@ -73,12 +79,9 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
    </div>
    <div class="message" id="message" aria-live="polite">Oi! Vamos ser amigos?</div>
   </div></div>
-  <div class="shell-label">◈ TAMAGOTCHI DO ANGIRU ◈</div>
-  <div class="controls">
-   <button class="round-key arrow" id="prev" aria-label="Opção anterior">◀</button>
-   <div style="font-size:.64rem;font-weight:1000;color:#71333d;text-align:center">MENU<br><span id="selected-action">COMIDA</span></div>
    <button class="round-key arrow" id="next" aria-label="Próxima opção">▶</button>
   </div>
+  <div class="shell-label">◈ TAMAGOTCHI DO ANGIRU ◈</div>
   <div class="action-keys">
    <div class="action-wrap"><button class="round-key action" id="escape">ESC</button><span>VOLTAR</span></div>
    <div class="action-wrap"><button class="round-key action" id="enter">ENTER</button><span>OK</span></div>
