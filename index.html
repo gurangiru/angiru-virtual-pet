@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5d8e8">
+<title>Angiru Virtual Pet</title>
+<style>
+:root{--shell:#e94c54;--shell-dark:#b92f3b;--key:#ffd64a;--ink:#49334d;--lcd:#b9c8a2;--lcd-dark:#263a39;--pink:#f7dce9}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 10%,#fff 0 2px,transparent 3px),linear-gradient(145deg,#d8efff,#f9e5f0 55%,#d8f3ed);background-size:34px 34px,cover;color:var(--ink);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;display:flex;justify-content:center;padding:24px 14px 36px}
+main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-spacing:.18em;font-weight:900;color:#9b6b91}.intro h1{margin:5px 0;font-size:clamp(1.8rem,6vw,2.5rem);color:#8c4d85}.intro p{margin:0 auto 16px;max-width:390px;font-size:.92rem;color:#765c78}
+.device{position:relative;margin:12px auto 18px;width:min(100%,410px);padding:22px 22px 25px;background:var(--shell);border:5px solid rgba(255,255,255,.38);border-radius:43% 43% 39% 39% / 22% 22% 30% 30%;box-shadow:inset -9px -12px 0 rgba(80,20,35,.13),inset 7px 8px 0 rgba(255,255,255,.2),0 16px 28px #6c527044;transform:rotate(-1deg)}
+.device:before{content:"";position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:68px;height:25px;background:var(--shell);border:5px solid rgba(255,255,255,.3);border-bottom:0;border-radius:22px 22px 0 0}
+.brand{font-weight:1000;font-size:clamp(1.15rem,4vw,1.45rem);letter-spacing:.04em;color:#fff2b5;text-shadow:2px 2px 0 #65416d,-1px -1px 0 #65416d;margin:0 0 13px;transform:rotate(-2deg)}
+.brand span{color:#b7f3db}
+.screen-frame{background:#51434d;padding:10px;border-radius:19px;box-shadow:inset 0 3px 5px #211a28,0 3px 0 #ffffff55}
+.screen{position:relative;overflow:hidden;min-height:265px;border:4px solid #71816e;border-radius:9px;background:repeating-linear-gradient(0deg,#b9c8a2 0 3px,#b3c29c 3px 4px);color:var(--lcd-dark);padding:10px 12px;box-shadow:inset 0 0 18px #596b5533;image-rendering:pixelated}
+.screen-top{display:flex;justify-content:space-between;font:700 .68rem monospace;opacity:.8;border-bottom:1px dashed #52634d;padding-bottom:5px}
+.pet-stage{height:145px;display:grid;place-items:center;position:relative}
+.pet{width:150px;height:140px;image-rendering:pixelated;filter:drop-shadow(3px 3px 0 #62735b);animation:bob 1.8s steps(2,end) infinite}
+@keyframes bob{50%{transform:translateY(-5px)}}
+.pet.sleeping{animation:none;transform:translateY(8px) rotate(8deg)}
+.pet.sick{filter:grayscale(.6) drop-shadow(3px 3px 0 #62735b)}
+.pet-face{font:700 .75rem monospace}
+.screen-bottom{display:flex;justify-content:space-between;gap:5px;font:700 .65rem monospace;border-top:1px dashed #52634d;padding-top:6px}
+.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}
+.meter{font:700 .58rem monospace;text-align:left}.meter-line{height:7px;border:1px solid #435640;margin-top:3px;background:#dce5c9}.meter-fill{height:100%;background:#526d50;transition:width .25s}
+.message{font:700 .72rem monospace;min-height:18px;margin-top:7px}
+.shell-label{font-size:.7rem;font-weight:900;color:#6f303c;margin:10px 0 8px;letter-spacing:.04em}
+.controls{display:flex;justify-content:space-between;align-items:center;padding:0 12px;gap:8px}
+.round-key{border:0;cursor:pointer;background:var(--key);color:#754d28;font-weight:1000;box-shadow:inset -3px -4px 0 #d99e30,0 2px 0 #ffffff66;transition:transform .1s}
+.round-key:active{transform:translateY(3px);box-shadow:inset -2px -2px 0 #d99e30}
+.arrow{width:48px;height:45px;border-radius:40% 55% 48% 45%;font-size:1.25rem}
+.action-keys{display:flex;justify-content:center;gap:22px;margin-top:14px}
+.action-wrap{display:grid;justify-items:center;gap:4px;font-size:.6rem;font-weight:1000;color:#692f3b}
+.action{width:53px;height:39px;border-radius:45% 45% 55% 55%;font-size:.7rem}
+.action:nth-child(1){background:#ffcf62}
+.key-help{font-size:.72rem;color:#6f5872;margin:10px auto 0;max-width:330px;line-height:1.5}
+.panel{background:#ffffffb8;border:1px solid #fff;border-radius:18px;padding:14px;margin:12px auto;max-width:410px;box-shadow:0 6px 18px #745c7814}
+.panel h2{font-size:1rem;margin:0 0 10px;color:#8c4d85}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.85rem;font-weight:700}
+input[type=text]{width:58%;min-width:0;border:1px solid #d8b8d0;border-radius:10px;padding:9px 10px;font:inherit;color:var(--ink);background:#fff}
+.colors{display:flex;gap:9px}.swatch{width:27px;height:27px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px #b99ab5;cursor:pointer}.swatch[aria-pressed=true]{box-shadow:0 0 0 3px #8c4d85}
+.info{font-size:.78rem;line-height:1.5;color:#795f7c}.footer{font-size:.7rem;color:#8e7891;margin-top:18px}
+button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offset:3px}
+@media(max-width:380px){.device{padding:19px 14px 22px}.screen{min-height:245px}.pet-stage{height:130px}.arrow{width:42px}.action-keys{gap:13px}}
+</style>
+</head>
+<body>
+<main>
+ <header class="intro"><div class="eyebrow">UM PEQUENO AMIGO PARA CUIDAR</div><h1>Angiru Virtual Pet <span aria-hidden="true">♡</span></h1><p>Um companheirinho de bolso inspirado nos bichinhos virtuais dos anos 2000.</p></header>
+ <section class="device" id="device" aria-label="Bichinho virtual">
+  <div class="brand">Raku<span>♥</span>raku DinoKun</div>
+  <div class="screen-frame"><div class="screen">
+   <div class="screen-top"><span id="pet-name-screen">DINO</span><span id="clock">00:00</span></div>
+   <div class="pet-stage">
+    <svg id="pet-art" class="pet" viewBox="0 0 160 145" role="img" aria-label="Seu dinossaurinho">
+     <g fill="#344b43">
+      <rect x="45" y="42" width="70" height="12"/><rect x="34" y="54" width="94" height="12"/><rect x="25" y="66" width="110" height="34"/><rect x="35" y="100" width="90" height="14"/><rect x="48" y="114" width="18" height="14"/><rect x="98" y="114" width="18" height="14"/><rect x="17" y="78" width="12" height="18"/><rect x="131" y="78" width="12" height="18"/>
+     </g>
+     <g fill="#b9c8a2"><rect x="51" y="48" width="12" height="6"/><rect x="75" y="48" width="12" height="6"/><rect x="99" y="48" width="12" height="6"/></g>
+     <g id="eyes" fill="#b9c8a2"><rect x="49" y="73" width="10" height="12"/><rect x="101" y="73" width="10" height="12"/></g>
+     <g id="mouth" fill="#b9c8a2"><rect x="66" y="94" width="28" height="5"/><rect x="73" y="99" width="14" height="5"/></g>
+     <g fill="#344b43"><rect x="28" y="112" width="20" height="9"/><rect x="112" y="112" width="20" height="9"/></g>
+    </svg>
+   </div>
+   <div class="screen-bottom"><span id="age">BEBÊ · DIA 1</span><span id="mood">FELIZ</span></div>
+   <div class="status-grid" aria-label="Necessidades do bichinho">
+    <div class="meter">FOME<div class="meter-line"><div class="meter-fill" id="hunger-bar"></div></div></div>
+    <div class="meter">ALEGRIA<div class="meter-line"><div class="meter-fill" id="happy-bar"></div></div></div>
+    <div class="meter">HIGIENE<div class="meter-line"><div class="meter-fill" id="clean-bar"></div></div></div>
+    <div class="meter">ENERGIA<div class="meter-line"><div class="meter-fill" id="energy-bar"></div></div></div>
+   </div>
+   <div class="message" id="message" aria-live="polite">Oi! Vamos ser amigos?</div>
+  </div></div>
+  <div class="shell-label">◈ TAMAGOTCHI DO ANGIRU ◈</div>
+  <div class="controls">
+   <button class="round-key arrow" id="prev" aria-label="Opção anterior">◀</button>
+   <div style="font-size:.64rem;font-weight:1000;color:#71333d;text-align:center">MENU<br><span id="selected-action">COMIDA</span></div>
+   <button class="round-key arrow" id="next" aria-label="Próxima opção">▶</button>
+  </div>
+  <div class="action-keys">
+   <div class="action-wrap"><button class="round-key action" id="escape">ESC</button><span>VOLTAR</span></div>
+   <div class="action-wrap"><button class="round-key action" id="enter">ENTER</button><span>OK</span></div>
+   <div class="action-wrap"><button class="round-key action" id="clock-btn">CLOCK</button><span>HORA</span></div>
+  </div>
+ </section>
+ <p class="key-help">Use ◀ e ▶ para escolher uma atividade e ENTER para confirmar. CLOCK mostra a hora; ESC volta ao estado normal.</p>
+ <section class="panel">
+  <h2>Personalize seu aparelhinho ✿</h2>
+  <div class="settings-row"><label for="pet-name">Nome do bichinho</label><input id="pet-name" type="text" maxlength="12" value="Dino" placeholder="Nome"/></div>
+  <div class="settings-row" style="margin-top:13px"><span>Cor do aparelho</span><div class="colors" role="group" aria-label="Cor do aparelho">
+   <button class="swatch" data-color="#e94c54" style="background:#e94c54" aria-label="Vermelho" aria-pressed="true"></button>
+   <button class="swatch" data-color="#f4f0df" style="background:#f4f0df" aria-label="Branco" aria-pressed="false"></button>
+   <button class="swatch" data-color="#f2c928" style="background:#f2c928" aria-label="Amarelo" aria-pressed="false"></button>
+   <button class="swatch" data-color="#20bca9" style="background:#20bca9" aria-label="Verde-água" aria-pressed="false"></button>
+  </div></div>
+ </section>
+ <section class="panel"><h2>Como cuidar?</h2><p class="info">Escolha uma atividade no menu e aperte ENTER. Alimente, brinque, dê banho ou coloque seu Dino para dormir. As necessidades mudam com o passar do tempo, mesmo quando você fecha a página. Seu progresso é salvo automaticamente neste navegador.</p><p class="info" id="save-status">♡ Progresso salvo neste aparelho.</p></section>
+ <div class="footer">Feito com carinho para a comunidade Angiru · versão inicial</div>
+</main>
+<script>
+(function(){
+ const KEY='angiruVirtualPet_v1';
+ const defaults={name:'Dino',color:'#e94c54',hunger:78,happy:78,clean:82,energy:82,createdAt:Date.now(),lastAt:Date.now(),sleeping:false,clockMode:false};
+ let state;
+ try{state={...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){state={...defaults}}
+ let menu=0; const actions=['COMIDA','BRINCAR','BANHO','DORMIR'];
+ const $=id=>document.getElementById(id);
+ function save(){state.lastAt=Date.now();try{localStorage.setItem(KEY,JSON.stringify(state));$('save-status').textContent='♡ Progresso salvo neste navegador.'}catch(e){$('save-status').textContent='Não foi possível salvar neste navegador.'}}
+ function clamp(n){return Math.max(0,Math.min(100,n))}
+ function ageDays(){return Math.max(1,Math.floor((Date.now()-state.createdAt)/86400000)+1)}
+ function stage(){const d=ageDays();return d<2?'BEBÊ':d<5?'JUVENIL':'ADULTO'}
+ function mood(){if(state.sleeping)return 'ZZZ';if(state.hunger<25||state.clean<20)return 'TRISTE';if(state.happy>70)return 'FELIZ';if(state.energy<25)return 'SONO';return 'OK'}
+ function message(t){$('message').textContent=t}
+ function render(){
+  document.documentElement.style.setProperty('--shell',state.color);
+  document.documentElement.style.setProperty('--shell-dark',state.color);
+  $('pet-name-screen').textContent=state.name.toUpperCase();
+  $('pet-name').value=state.name;
+  $('clock').textContent=state.clockMode?new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'♡ ANGIRU';
+  $('age').textContent=stage()+' · DIA '+ageDays();
+  $('mood').textContent=mood();
+  [['hunger','hunger'],['happy','happy'],['clean','clean'],['energy','energy']].forEach(([id,key])=>$(id+'-bar').style.width=state[key]+'%');
+  $('selected-action').textContent=actions[menu];
+  $('pet-art').classList.toggle('sleeping',state.sleeping);
+  $('pet-art').classList.toggle('sick',state.hunger<12||state.clean<10);
+  $('eyes').style.opacity=state.sleeping?'.15':'1';
+  document.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===state.color)));
+ }
+ function passTime(){
+  const now=Date.now(), elapsed=Math.max(0,Math.min(7*86400000,now-(state.lastAt||now))), units=elapsed/60000;
+  if(units>0){
+   state.hunger=clamp(state.hunger-units*.23);
+   state.happy=clamp(state.happy-units*.13);
+   state.clean=clamp(state.clean-units*.11);
+   state.energy=state.sleeping?clamp(state.energy+units*.55):clamp(state.energy-units*.18);
+   state.lastAt=now;save();
+  }
+ }
+ function act(){
+  if(state.sleeping&&actions[menu]!=='DORMIR'){message('Shhh... está dormindo! Use DORMIR para acordar.');return}
+  switch(actions[menu]){
+   case 'COMIDA':state.hunger=clamp(state.hunger+28);state.happy=clamp(state.happy+4);message('NHAM! Que delícia! 🍎');break;
+   case 'BRINCAR':if(state.energy<12){message('Estou cansadinho... preciso dormir!');return}state.happy=clamp(state.happy+24);state.energy=clamp(state.energy-13);state.hunger=clamp(state.hunger-5);message('Oba! Adoro brincar! ★');break;
+   case 'BANHO':state.clean=clamp(state.clean+35);state.happy=clamp(state.happy+5);message('Splish splash! Fiquei limpinho!');break;
+   case 'DORMIR':state.sleeping=!state.sleeping;message(state.sleeping?'Boa noite, bons sonhos! Zzz...':'Bom dia! Que soninho gostoso.');break;
+  }
+  save();render();
+ }
+ $('prev').addEventListener('click',()=>{menu=(menu+actions.length-1)%actions.length;render()});
+ $('next').addEventListener('click',()=>{menu=(menu+1)%actions.length;render()});
+ $('enter').addEventListener('click',act);
+ $('escape').addEventListener('click',()=>{state.clockMode=false;message('Estou aqui com você!');render()});
+ $('clock-btn').addEventListener('click',()=>{state.clockMode=!state.clockMode;message(state.clockMode?'Relógio ativado!':'Voltamos ao nosso visor.');render()});
+ $('pet-name').addEventListener('input',e=>{state.name=e.target.value.trim().slice(0,12)||'Dino';$('pet-name-screen').textContent=state.name.toUpperCase();save()});
+ document.querySelectorAll('.swatch').forEach(b=>b.addEventListener('click',()=>{state.color=b.dataset.color;save();render()}));
+ passTime();render();
+ setInterval(()=>{passTime();render()},15000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden){passTime();render()}});
+})();
+</script>
+</body>
+</html>
