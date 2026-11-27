@@ -25,6 +25,32 @@ main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-sp
 .pet.sleeping{animation:none;transform:translateY(7px) rotate(8deg)}
 .pet.sick{filter:grayscale(.6) drop-shadow(3px 3px 0 #62735b)}
 .pet-face{font:700 .75rem monospace}
+/* Sprites vivos: estética de pixels e movimentos suaves */
+.pet{overflow:visible;shape-rendering:crispEdges;transform-origin:50% 82%}
+.pet .pet__body{transform-box:fill-box;transform-origin:center bottom;animation:pet-breathe 2.8s steps(2,end) infinite}
+.pet .pet__eyes{transform-box:fill-box;transform-origin:center;animation:pet-blink 4.6s steps(1,end) infinite}
+.pet .pet__mouth{transform-box:fill-box;transform-origin:center;transition:transform .2s}
+.pet .pet__cheeks{opacity:0;transition:opacity .2s}
+.pet .pet__wave{transform-box:fill-box;transform-origin:85% 90%}
+.pet .pet__tail{transform-box:fill-box;transform-origin:12% 85%}
+.pet .pet__gills{transform-box:fill-box;transform-origin:50% 80%}
+.pet--happy .pet__cheeks{opacity:1}
+.pet--happy .pet__mouth{transform:scaleY(1.35)}
+.pet--sad .pet__mouth{transform:rotate(180deg) translateY(-3px)}
+.pet--sleeping .pet__eyes{animation:none;transform:scaleY(.12)}
+.pet--sleeping .pet__body{animation:pet-sleep 2.8s ease-in-out infinite}
+.pet--playful{animation:pet-hop .48s steps(2,end) 3}
+.pet--capybara .pet__wave{animation:capy-wave .8s steps(2,end) 3}
+.pet--caramelo .pet__tail{animation:dog-tail .35s steps(2,end) 6}
+.pet--axolotl .pet__gills{animation:axo-gills .65s ease-in-out 4}
+@keyframes pet-breathe{0%,100%{transform:translateY(1px) scaleY(1)}50%{transform:translateY(-1px) scaleY(1.035)}}
+@keyframes pet-blink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.12)}}
+@keyframes pet-sleep{0%,100%{transform:translateY(4px) scaleY(.98)}50%{transform:translateY(6px) scaleY(1.015)}}
+@keyframes pet-hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes capy-wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-24deg)}}
+@keyframes dog-tail{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(20deg)}}
+@keyframes axo-gills{0%,100%{transform:rotate(0)}50%{transform:rotate(9deg)}}
+
 .screen-bottom{display:flex;justify-content:space-between;gap:5px;font:700 .62rem monospace;border-top:1px dashed #52634d;padding-top:5px}
 .status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:7px}
 .meter{font:700 .53rem monospace;text-align:left}.meter-line{height:6px;border:1px solid #435640;margin-top:3px;background:#dce5c9}.meter-fill{height:100%;background:#526d50;transition:width .25s}
@@ -132,11 +158,37 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
  const defaults={name:'',species:null,color:'#e94c54',hunger:78,happy:78,clean:82,energy:82,createdAt:Date.now(),lastAt:Date.now(),sleeping:false,clockMode:false};
  let state;
  try{state={...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){state={...defaults}}
- let menu=0, choosingSpecies=!state.species; const actions=['COMIDA','BRINCAR','BANHO','DORMIR'];
+ let menu=0, choosingSpecies=!state.species, renderedSpecies=null, reaction=''; const actions=['COMIDA','BRINCAR','BANHO','DORMIR'];
  const species={
-  capybara:{name:'Capivara',defaultName:'Capi',art:`<g fill="#a9673f" stroke="#593c31" stroke-width="5" stroke-linejoin="round"><ellipse cx="80" cy="88" rx="53" ry="43"/><ellipse cx="80" cy="55" rx="43" ry="36"/><path d="M48 34 Q37 12 28 29 L34 49 M112 34 Q123 12 132 29 L126 49" fill="#a9673f"/><ellipse cx="80" cy="70" rx="27" ry="19" fill="#754a36"/><path d="M58 122 L53 133 L73 133 L77 119 M103 122 L107 133 L127 133 L119 119" /></g><g fill="#241f20"><circle cx="64" cy="54" r="5"/><circle cx="96" cy="54" r="5"/><ellipse cx="72" cy="69" rx="4" ry="3"/><ellipse cx="88" cy="69" rx="4" ry="3"/></g><path d="M74 83 Q80 88 86 83" fill="none" stroke="#593c31" stroke-width="3" stroke-linecap="round"/><path d="M28 78 Q9 62 14 48 Q22 45 28 61" fill="none" stroke="#a9673f" stroke-width="11" stroke-linecap="round"/>`},
-  caramelo:{name:'Caramelo',defaultName:'Caramelo',art:`<g fill="#c98238" stroke="#5a392a" stroke-width="5" stroke-linejoin="round"><ellipse cx="80" cy="91" rx="48" ry="39"/><circle cx="80" cy="49" r="39"/><path d="M48 29 Q20 2 23 42 Q26 61 51 55 M112 29 Q140 2 137 42 Q134 61 109 55"/><path d="M48 112 L45 133 L64 133 L68 117 M92 117 L96 133 L115 133 L112 112"/><path d="M121 91 Q147 83 145 59" fill="none" stroke="#5a392a" stroke-width="9" stroke-linecap="round"/></g><g fill="#201d1b"><circle cx="66" cy="47" r="5"/><circle cx="94" cy="47" r="5"/><ellipse cx="80" cy="65" rx="12" ry="9"/></g><path d="M73 79 Q80 88 87 79" fill="none" stroke="#5a392a" stroke-width="3" stroke-linecap="round"/><path d="M75 69 Q80 73 85 69" fill="none" stroke="#fff" stroke-width="2"/>`},
-  axolotl:{name:'Axolote',defaultName:'Axo',art:`<g fill="#f6e9e8" stroke="#b97891" stroke-width="4" stroke-linejoin="round"><ellipse cx="80" cy="88" rx="43" ry="39"/><path d="M46 47 Q19 13 12 41 Q10 57 43 64 M54 38 Q40 1 30 15 Q25 31 50 54 M114 47 Q141 13 148 41 Q150 57 117 64 M106 38 Q120 1 130 15 Q135 31 110 54" fill="#f1a6bd"/><path d="M52 111 L42 128 L61 125 L67 115 M108 111 L118 128 L99 125 L93 115" fill="#f6e9e8"/></g><g fill="#315b91"><circle cx="65" cy="76" r="6"/><circle cx="95" cy="76" r="6"/></g><path d="M70 91 Q80 101 90 91" fill="none" stroke="#b97891" stroke-width="3" stroke-linecap="round"/><path d="M119 94 Q145 99 139 119 Q132 130 118 117" fill="#f6e9e8" stroke="#b97891" stroke-width="4"/>`}
+  capybara:{name:'Capivara',defaultName:'Capi',art:`<g class="pet__body" shape-rendering="crispEdges">
+   <g fill="#75462f"><rect x="38" y="35" width="22" height="19"/><rect x="100" y="35" width="22" height="19"/></g>
+   <g fill="#b97848"><rect x="43" y="26" width="13" height="20"/><rect x="104" y="26" width="13" height="20"/><rect x="35" y="52" width="90" height="55"/><rect x="43" y="42" width="74" height="51"/><rect x="49" y="100" width="22" height="24"/><rect x="89" y="100" width="22" height="24"/><rect x="43" y="119" width="32" height="9"/><rect x="85" y="119" width="32" height="9"/></g>
+   <g fill="#9a5d3c"><rect x="48" y="55" width="64" height="37"/><rect x="55" y="91" width="50" height="13"/></g>
+   <g class="pet__eyes" fill="#29221e"><rect x="57" y="60" width="8" height="8"/><rect x="95" y="60" width="8" height="8"/></g>
+   <g fill="#5b392b"><rect x="68" y="76" width="24" height="12"/><rect x="73" y="73" width="14" height="7"/></g>
+   <g class="pet__mouth" fill="none" stroke="#593c31" stroke-width="3" stroke-linecap="square"><path d="M72 94h16m-8 0v4"/></g>
+   <g class="pet__cheeks" fill="#e99a83"><rect x="45" y="77" width="12" height="7"/><rect x="103" y="77" width="12" height="7"/></g>
+   <g class="pet__wave" fill="#b97848"><rect x="20" y="67" width="17" height="30"/><rect x="13" y="53" width="13" height="22"/><rect x="7" y="46" width="10" height="17"/><rect x="23" y="42" width="10" height="20"/></g>
+  </g>`},
+  caramelo:{name:'Caramelo',defaultName:'Caramelo',art:`<g class="pet__body" shape-rendering="crispEdges">
+   <g fill="#a95e2c"><rect x="35" y="31" width="23" height="34"/><rect x="102" y="31" width="23" height="34"/></g>
+   <g fill="#d88c3f"><rect x="43" y="23" width="74" height="62"/><rect x="34" y="65" width="92" height="44"/><rect x="44" y="104" width="25" height="24"/><rect x="91" y="104" width="25" height="24"/><rect x="37" y="121" width="35" height="9"/><rect x="88" y="121" width="35" height="9"/></g>
+   <g fill="#efb45f"><rect x="57" y="29" width="46" height="17"/><rect x="47" y="75" width="66" height="22"/></g>
+   <g class="pet__eyes" fill="#29201b"><rect x="59" y="51" width="9" height="10"/><rect x="94" y="51" width="9" height="10"/></g>
+   <g fill="#4b3025"><rect x="68" y="69" width="24" height="17"/><rect x="74" y="65" width="12" height="7"/></g>
+   <g class="pet__mouth" fill="none" stroke="#4b3025" stroke-width="3" stroke-linecap="square"><path d="M72 91h16m-8 0v5"/></g>
+   <g class="pet__cheeks" fill="#f2a18a"><rect x="43" y="72" width="12" height="7"/><rect x="105" y="72" width="12" height="7"/></g>
+   <g class="pet__tail" fill="none" stroke="#a95e2c" stroke-width="9" stroke-linecap="square"><path d="M119 91h12V76h9V59"/></g>
+   <g fill="#d88c3f"><rect x="20" y="51" width="13" height="13"/><rect x="127" y="51" width="13" height="13"/></g>
+  </g>`},
+  axolotl:{name:'Axolote',defaultName:'Axo',art:`<g class="pet__body" shape-rendering="crispEdges">
+   <g class="pet__gills" fill="#ed9fbd" stroke="#bd7194" stroke-width="2"><rect x="25" y="34" width="12" height="34"/><rect x="13" y="24" width="12" height="28"/><rect x="8" y="44" width="12" height="25"/><rect x="123" y="34" width="12" height="34"/><rect x="135" y="24" width="12" height="28"/><rect x="140" y="44" width="12" height="25"/></g>
+   <g fill="#f8e9e9" stroke="#c27e98" stroke-width="3"><rect x="39" y="43" width="82" height="67"/><rect x="49" y="101" width="20" height="19"/><rect x="91" y="101" width="20" height="19"/><rect x="32" y="64" width="14" height="29"/><rect x="114" y="64" width="14" height="29"/></g>
+   <g class="pet__eyes" fill="#315b91"><rect x="58" y="66" width="10" height="11"/><rect x="92" y="66" width="10" height="11"/></g>
+   <g class="pet__mouth" fill="none" stroke="#bd7194" stroke-width="3" stroke-linecap="square"><path d="M69 88h7l4 4 4-4h7"/></g>
+   <g class="pet__cheeks" fill="#f2a6bf"><rect x="46" y="83" width="13" height="7"/><rect x="101" y="83" width="13" height="7"/></g>
+   <g fill="#f8e9e9" stroke="#c27e98" stroke-width="3"><rect x="119" y="91" width="16" height="19"/><rect x="130" y="104" width="13" height="12"/></g>
+  </g>`}
  };
 
  const $=id=>document.getElementById(id);
@@ -154,9 +206,16 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
   $('care-panel').hidden=!adopted||choosingSpecies;
   if(adopted){
    const pet=species[state.species];
-   $('pet-art').innerHTML=pet.art;
+   if(renderedSpecies!==state.species){$('pet-art').innerHTML=pet.art;renderedSpecies=state.species;}
    $('pet-art').setAttribute('aria-label',pet.name+' virtual');
    $('pet-name-screen').textContent=(state.name||pet.defaultName).toUpperCase();
+   const art=$('pet-art');
+   ['capybara','caramelo','axolotl','happy','sad','sleeping','playful'].forEach(c=>art.classList.remove('pet--'+c));
+   art.classList.add('pet--'+state.species);
+   if(state.sleeping)art.classList.add('pet--sleeping');
+   else if(reaction==='playful')art.classList.add('pet--playful','pet--happy');
+   else if(state.happy<30||state.hunger<25||state.clean<20)art.classList.add('pet--sad');
+   else if(state.happy>70)art.classList.add('pet--happy');
   }
   document.documentElement.style.setProperty('--shell',state.color);
   document.documentElement.style.setProperty('--shell-dark',state.color);
@@ -169,7 +228,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
   $('selected-action').textContent=actions[menu];
   $('pet-art').classList.toggle('sleeping',state.sleeping);
   $('pet-art').classList.toggle('sick',state.hunger<12||state.clean<10);
-  $('eyes').style.opacity=state.sleeping?'.15':'1';
+  
   document.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===state.color)));
  }
  function passTime(){
@@ -183,14 +242,16 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
   }
  }
  function act(){
+  reaction='';
   if(state.sleeping&&actions[menu]!=='DORMIR'){message('Shhh... está dormindo! Use DORMIR para acordar.');return}
   switch(actions[menu]){
    case 'COMIDA':state.hunger=clamp(state.hunger+28);state.happy=clamp(state.happy+4);message('NHAM! Que delícia! 🍎');break;
-   case 'BRINCAR':if(state.energy<12){message('Estou cansadinho... preciso dormir!');return}state.happy=clamp(state.happy+24);state.energy=clamp(state.energy-13);state.hunger=clamp(state.hunger-5);message('Oba! Adoro brincar! ★');break;
+   case 'BRINCAR':if(state.energy<12){message('Estou cansadinho... preciso dormir!');return}state.happy=clamp(state.happy+24);state.energy=clamp(state.energy-13);state.hunger=clamp(state.hunger-5);reaction='playful';message('Oba! Adoro brincar! ★');break;
    case 'BANHO':state.clean=clamp(state.clean+35);state.happy=clamp(state.happy+5);message('Splish splash! Fiquei limpinho!');break;
    case 'DORMIR':state.sleeping=!state.sleeping;message(state.sleeping?'Boa noite, bons sonhos! Zzz...':'Bom dia! Que soninho gostoso.');break;
   }
   save();render();
+  if(reaction==='playful')window.setTimeout(()=>{reaction='';render()},1550);
  }
 
  document.querySelectorAll('[data-species]').forEach(button=>button.addEventListener('click',()=>{
