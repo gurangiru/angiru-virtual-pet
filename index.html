@@ -20,15 +20,15 @@ main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-sp
 .menu-display{font:900 .66rem monospace;text-align:center;letter-spacing:.08em;padding:5px 2px 0;color:#344b43}
 .menu-display span{display:inline-block;min-width:85px;padding:2px 8px;border:1px solid #60735b;border-radius:3px;background:#cbd5b5}
 .pet-stage{height:113px;display:grid;place-items:center;position:relative}
-.pet{width:125px;height:116px;image-rendering:pixelated;filter:drop-shadow(3px 3px 0 #62735b);animation:bob 1.8s steps(2,end) infinite}
-@keyframes bob{50%{transform:translateY(-4px)}}
+.pet{width:125px;height:116px;image-rendering:pixelated;filter:drop-shadow(3px 3px 0 #62735b);animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 .pet.sleeping{animation:none;transform:translateY(7px) rotate(8deg)}
 .pet.sick{filter:grayscale(.6) drop-shadow(3px 3px 0 #62735b)}
 .pet-face{font:700 .75rem monospace}
 /* Sprites vivos: estética de pixels e movimentos suaves */
 .pet{overflow:visible;shape-rendering:crispEdges;transform-origin:50% 82%}
-.pet .pet__body{transform-box:fill-box;transform-origin:center bottom;animation:pet-breathe 2.8s steps(2,end) infinite}
-.pet .pet__eyes{transform-box:fill-box;transform-origin:center;animation:pet-blink 4.6s steps(1,end) infinite}
+.pet .pet__body{transform-box:fill-box;transform-origin:center bottom;animation:pet-breathe 3.6s ease-in-out infinite}
+.pet .pet__eyes{transform-box:fill-box;transform-origin:center;animation:pet-blink 5.8s steps(1,end) infinite}
 .pet .pet__mouth{transform-box:fill-box;transform-origin:center;transition:transform .2s}
 .pet .pet__cheeks{opacity:0;transition:opacity .2s}
 .pet .pet__wave{transform-box:fill-box;transform-origin:85% 90%;opacity:0;pointer-events:none}
@@ -40,21 +40,25 @@ main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-sp
 .pet--happy .pet__mouth{transform:scaleY(1.35)}
 .pet--sad .pet__mouth{transform:rotate(180deg) translateY(-3px)}
 .pet--sleeping .pet__eyes{animation:none;transform:scaleY(.12)}
-.pet--sleeping .pet__body{animation:pet-sleep 2.8s ease-in-out infinite}
+.pet--sleeping .pet__body{animation:pet-sleep 4.2s ease-in-out infinite}
 .pet--playful{animation:pet-hop .48s steps(2,end) 3}
 .pet--delighted .pet__body{animation:pet-hop .48s steps(2,end) 2}
 .pet--delighted .pet__cheeks{opacity:1}
 @keyframes capy-greeting{0%{opacity:1;transform:rotate(0)}18%{opacity:1;transform:rotate(-28deg)}36%{opacity:1;transform:rotate(9deg)}55%{opacity:1;transform:rotate(-20deg)}76%{opacity:1;transform:rotate(0)}100%{opacity:0;transform:translate(8px,8px) rotate(12deg)}}
 .pet--caramelo .pet__tail{animation:dog-tail .35s steps(2,end) 6}
 .pet--axolotl .pet__gills{animation:axo-gills .65s ease-in-out 4}
-@keyframes pet-breathe{0%,100%{transform:translateY(1px) scaleY(1)}50%{transform:translateY(-1px) scaleY(1.035)}}
-@keyframes pet-blink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.12)}}
-@keyframes pet-sleep{0%,100%{transform:translateY(4px) scaleY(.98)}50%{transform:translateY(6px) scaleY(1.015)}}
+@keyframes pet-breathe{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-.6px) scaleY(1.018)}}
+@keyframes pet-blink{0%,35%,38%,41%,44%,100%{transform:scaleY(1)}36.5%,42.5%{transform:scaleY(.12)}}
+@keyframes pet-sleep{0%,100%{transform:translateY(3px) scaleY(.99)}50%{transform:translateY(4px) scaleY(1.012)}}
 @keyframes pet-hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes capy-wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-24deg)}}
 @keyframes dog-tail{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(20deg)}}
 @keyframes axo-gills{0%,100%{transform:rotate(0)}50%{transform:rotate(9deg)}}
 
+@media(prefers-reduced-motion:reduce){
+ .pet,.pet .pet__body,.pet .pet__eyes,.pet .pet__wave,.pet .pet__tail,.pet .pet__gills{animation:none!important;transition:none!important}
+ .pet--sleeping .pet__eyes{transform:scaleY(.12)}
+}
 .screen-bottom{display:flex;justify-content:space-between;gap:5px;font:700 .62rem monospace;border-top:1px dashed #52634d;padding-top:5px}
 .status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:7px}
 .meter{font:700 .53rem monospace;text-align:left}.meter-line{height:6px;border:1px solid #435640;margin-top:3px;background:#dce5c9}.meter-fill{height:100%;background:#526d50;transition:width .25s}
