@@ -31,7 +31,9 @@ main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-sp
 .pet .pet__eyes{transform-box:fill-box;transform-origin:center;animation:pet-blink 4.6s steps(1,end) infinite}
 .pet .pet__mouth{transform-box:fill-box;transform-origin:center;transition:transform .2s}
 .pet .pet__cheeks{opacity:0;transition:opacity .2s}
-.pet .pet__wave{transform-box:fill-box;transform-origin:85% 90%}
+.pet .pet__wave{transform-box:fill-box;transform-origin:85% 90%;opacity:0;pointer-events:none}
+.pet--greeting .pet__wave{opacity:1;animation:capy-greeting 1.5s steps(2,end) forwards}
+.pet--greeted .pet__wave{opacity:0}
 .pet .pet__tail{transform-box:fill-box;transform-origin:12% 85%}
 .pet .pet__gills{transform-box:fill-box;transform-origin:50% 80%}
 .pet--happy .pet__cheeks{opacity:1}
@@ -42,7 +44,7 @@ main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-sp
 .pet--playful{animation:pet-hop .48s steps(2,end) 3}
 .pet--delighted .pet__body{animation:pet-hop .48s steps(2,end) 2}
 .pet--delighted .pet__cheeks{opacity:1}
-.pet--capybara .pet__wave{animation:capy-wave .8s steps(2,end) 3}
+@keyframes capy-greeting{0%{opacity:1;transform:rotate(0)}18%{opacity:1;transform:rotate(-28deg)}36%{opacity:1;transform:rotate(9deg)}55%{opacity:1;transform:rotate(-20deg)}76%{opacity:1;transform:rotate(0)}100%{opacity:0;transform:translate(8px,8px) rotate(12deg)}}
 .pet--caramelo .pet__tail{animation:dog-tail .35s steps(2,end) 6}
 .pet--axolotl .pet__gills{animation:axo-gills .65s ease-in-out 4}
 @keyframes pet-breathe{0%,100%{transform:translateY(1px) scaleY(1)}50%{transform:translateY(-1px) scaleY(1.035)}}
@@ -160,7 +162,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
  const defaults={name:'',species:null,color:'#e94c54',hunger:78,happy:78,clean:82,energy:82,createdAt:Date.now(),lastAt:Date.now(),sleeping:false,clockMode:false};
  let state;
  try{state={...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){state={...defaults}}
- let menu=0, choosingSpecies=!state.species, renderedSpecies=null, reaction=''; const actions=['COMIDA','BRINCAR','BANHO','DORMIR'];
+ let menu=0, choosingSpecies=!state.species, renderedSpecies=null, reaction='', greetingActive=!!(state.species==='capybara'&&!choosingSpecies), greetingTimer=null; const actions=['COMIDA','BRINCAR','BANHO','DORMIR'];
  const species={
   capybara:{name:'Capivara',defaultName:'Capi',art:`<g class="pet__body" shape-rendering="crispEdges">
    <g fill="#75462f"><rect x="38" y="35" width="22" height="19"/><rect x="100" y="35" width="22" height="19"/></g>
@@ -200,6 +202,11 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
  function stage(){const d=ageDays();return d<2?'BEBÊ':d<5?'JUVENIL':'ADULTO'}
  function mood(){if(state.sleeping)return 'ZZZ';if(state.hunger<25||state.clean<20)return 'TRISTE';if(state.happy>70)return 'FELIZ';if(state.energy<25)return 'SONO';return 'OK'}
  function message(t){$('message').textContent=t}
+ function startCapybaraGreeting(){
+  greetingActive=true;
+  if(greetingTimer)window.clearTimeout(greetingTimer);
+  greetingTimer=window.setTimeout(()=>{greetingActive=false;render()},1500);
+ }
  function render(){
   const adopted=!!(state.species&&species[state.species]);
   $('adoption').hidden=adopted&&!choosingSpecies;
@@ -212,8 +219,9 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
    $('pet-art').setAttribute('aria-label',pet.name+' virtual');
    $('pet-name-screen').textContent=(state.name||pet.defaultName).toUpperCase();
    const art=$('pet-art');
-   ['capybara','caramelo','axolotl','happy','sad','sleeping','playful','delighted'].forEach(c=>art.classList.remove('pet--'+c));
+   ['capybara','caramelo','axolotl','happy','sad','sleeping','playful','delighted','greeting','greeted'].forEach(c=>art.classList.remove('pet--'+c));
    art.classList.add('pet--'+state.species);
+   if(state.species==='capybara')art.classList.add(greetingActive?'pet--greeting':'pet--greeted');
    if(state.sleeping)art.classList.add('pet--sleeping');
    else if(reaction==='playful')art.classList.add('pet--playful','pet--happy');
    else if(reaction==='delighted')art.classList.add('pet--delighted','pet--happy');
@@ -262,9 +270,11 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
   if(!species[chosen])return;
   const previousName=state.name;
   state.species=chosen;choosingSpecies=false;
+  greetingActive=chosen==='capybara';
   if(firstAdoption||!previousName||previousName==='Dino')state.name=species[chosen].defaultName;
   state.sleeping=false;state.clockMode=false;
   save();message('Que alegria! Temos um novo companheirinho! ♡');render();
+  if(chosen==='capybara')startCapybaraGreeting();
  }));
  $('change-pet').addEventListener('click',()=>{choosingSpecies=true;render();});
  $('prev').addEventListener('click',()=>{menu=(menu+actions.length-1)%actions.length;render()});
@@ -275,6 +285,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
  $('pet-name').addEventListener('input',e=>{state.name=e.target.value.trim().slice(0,12)||'Dino';$('pet-name-screen').textContent=state.name.toUpperCase();save()});
  document.querySelectorAll('.swatch').forEach(b=>b.addEventListener('click',()=>{state.color=b.dataset.color;save();render()}));
  passTime();render();
+ if(greetingActive)startCapybaraGreeting();
  setInterval(()=>{passTime();render()},15000);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){passTime();render()}});
 })();
