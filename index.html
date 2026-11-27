@@ -39,7 +39,9 @@ main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-sp
 .pet--sad .pet__mouth{transform:rotate(180deg) translateY(-3px)}
 .pet--sleeping .pet__eyes{animation:none;transform:scaleY(.12)}
 .pet--sleeping .pet__body{animation:pet-sleep 2.8s ease-in-out infinite}
-.pet--playful{animation:pet-hop .48s steps(2,end) 3}\n.pet--delighted .pet__body{animation:pet-hop .48s steps(2,end) 2}\n.pet--delighted .pet__cheeks{opacity:1}
+.pet--playful{animation:pet-hop .48s steps(2,end) 3}
+.pet--delighted .pet__body{animation:pet-hop .48s steps(2,end) 2}
+.pet--delighted .pet__cheeks{opacity:1}
 .pet--capybara .pet__wave{animation:capy-wave .8s steps(2,end) 3}
 .pet--caramelo .pet__tail{animation:dog-tail .35s steps(2,end) 6}
 .pet--axolotl .pet__gills{animation:axo-gills .65s ease-in-out 4}
@@ -213,7 +215,8 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
    ['capybara','caramelo','axolotl','happy','sad','sleeping','playful','delighted'].forEach(c=>art.classList.remove('pet--'+c));
    art.classList.add('pet--'+state.species);
    if(state.sleeping)art.classList.add('pet--sleeping');
-   else if(reaction==='playful')art.classList.add('pet--playful','pet--happy');\n   else if(reaction==='delighted')art.classList.add('pet--delighted','pet--happy');
+   else if(reaction==='playful')art.classList.add('pet--playful','pet--happy');
+   else if(reaction==='delighted')art.classList.add('pet--delighted','pet--happy');
    else if(state.happy<30||state.hunger<25||state.clean<20)art.classList.add('pet--sad');
    else if(state.happy>70)art.classList.add('pet--happy');
   }
