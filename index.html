@@ -54,6 +54,13 @@ main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-sp
 @keyframes capy-wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-24deg)}}
 @keyframes dog-tail{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(20deg)}}
 @keyframes axo-gills{0%,100%{transform:rotate(0)}50%{transform:rotate(9deg)}}
+/* Personalidades: cada espécie tem um ritmo e um jeitinho próprios. */
+.pet--capybara .pet__body{animation:capybara-calm 5.2s ease-in-out infinite}
+.pet--caramelo .pet__tail{animation:dog-tail 1.05s ease-in-out infinite}
+.pet--axolotl .pet__gills{animation:axo-gills 1.7s ease-in-out infinite}
+.pet.pet--sleeping .pet__body{animation:pet-sleep 4.2s ease-in-out infinite}
+.pet.pet--sleeping .pet__tail,.pet.pet--sleeping .pet__gills{animation:none}
+@keyframes capybara-calm{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-.5px) scaleY(1.014)}}
 
 @media(prefers-reduced-motion:reduce){
  .pet,.pet .pet__body,.pet .pet__eyes,.pet .pet__wave,.pet .pet__tail,.pet .pet__gills{animation:none!important;transition:none!important}
@@ -204,8 +211,16 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
  function clamp(n){return Math.max(0,Math.min(100,n))}
  function ageDays(){return Math.max(1,Math.floor((Date.now()-state.createdAt)/86400000)+1)}
  function stage(){const d=ageDays();return d<2?'BEBÊ':d<5?'JUVENIL':'ADULTO'}
- function mood(){if(state.sleeping)return 'ZZZ';if(state.hunger<25||state.clean<20)return 'TRISTE';if(state.happy>70)return 'FELIZ';if(state.energy<25)return 'SONO';return 'OK'}
+ function mood(){if(state.sleeping)return 'ZZZ';if(state.hunger<25||state.clean<20)return 'TRISTE';if(state.energy<25)return 'SONO';if(state.happy>70)return ({capybara:'SERENA',caramelo:'ANIMADO',axolotl:'CURIOSO'}[state.species]||'FELIZ');return 'OK'}
  function message(t){$('message').textContent=t}
+ function personalityMessage(action){
+  const lines={
+   capybara:{COMIDA:'Hmmm... comidinha gostosa. Obrigada! 🌿',BRINCAR:'Adoro passear pertinho de você. ♡',BANHO:'Um banho bem calminho... que delícia!',DORMIR:state.sleeping?'Hora de descansar juntinhos. Zzz...':'Que bom acordar e encontrar você! ♡'},
+   caramelo:{COMIDA:'AU! Que comidinha boa! 🦴',BRINCAR:'BORA! BORA BRINCAR! AU AU! ★',BANHO:'Até gosto de água... splash!',DORMIR:state.sleeping:'Au... boa noite! Vou sonhar com bolinhas.':'Acordei! Tem brincadeira?'},
+   axolotl:{COMIDA:'NHAC! Que descoberta deliciosa! 🫧',BRINCAR:'O que será que acontece se eu...?',BANHO:'Água por todo lado! Meu lugar favorito! 🫧',DORMIR:state.sleeping?'Vou flutuar nos meus sonhos... Zzz.':'Oi! Sonhei com bolhinhas!'}
+  };
+  return (lines[state.species]||{})[action]||'Que alegria estar com você! ♡';
+ }
  function startCapybaraGreeting(){
   greetingActive=true;
   if(greetingTimer)window.clearTimeout(greetingTimer);
@@ -261,10 +276,10 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
   reaction='';
   if(state.sleeping&&actions[menu]!=='DORMIR'){message('Shhh... está dormindo! Use DORMIR para acordar.');return}
   switch(actions[menu]){
-   case 'COMIDA':state.hunger=clamp(state.hunger+28);state.happy=clamp(state.happy+4);reaction='delighted';message('NHAM! Que delícia! 🍎');break;
-   case 'BRINCAR':if(state.energy<12){message('Estou cansadinho... preciso dormir!');return}state.happy=clamp(state.happy+24);state.energy=clamp(state.energy-13);state.hunger=clamp(state.hunger-5);reaction='playful';message('Oba! Adoro brincar! ★');break;
-   case 'BANHO':state.clean=clamp(state.clean+35);state.happy=clamp(state.happy+5);reaction='delighted';message('Splish splash! Fiquei limpinho!');break;
-   case 'DORMIR':state.sleeping=!state.sleeping;if(!state.sleeping)reaction='delighted';message(state.sleeping?'Boa noite, bons sonhos! Zzz...':'Bom dia! Que soninho gostoso.');break;
+   case 'COMIDA':state.hunger=clamp(state.hunger+28);state.happy=clamp(state.happy+4);reaction='delighted';message(personalityMessage('COMIDA'));break;
+   case 'BRINCAR':if(state.energy<12){message('Estou cansadinho... preciso dormir!');return}state.happy=clamp(state.happy+24);state.energy=clamp(state.energy-13);state.hunger=clamp(state.hunger-5);reaction='playful';message(personalityMessage('BRINCAR'));break;
+   case 'BANHO':state.clean=clamp(state.clean+35);state.happy=clamp(state.happy+5);reaction='delighted';message(personalityMessage('BANHO'));break;
+   case 'DORMIR':state.sleeping=!state.sleeping;if(!state.sleeping)reaction='delighted';message(personalityMessage('DORMIR'));break;
   }
   save();render();
   if(reaction)window.setTimeout(()=>{reaction='';render()},1550);
