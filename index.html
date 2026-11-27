@@ -39,7 +39,7 @@ main{width:min(100%,560px);text-align:center}.eyebrow{font-size:.75rem;letter-sp
 .pet--sad .pet__mouth{transform:rotate(180deg) translateY(-3px)}
 .pet--sleeping .pet__eyes{animation:none;transform:scaleY(.12)}
 .pet--sleeping .pet__body{animation:pet-sleep 2.8s ease-in-out infinite}
-.pet--playful{animation:pet-hop .48s steps(2,end) 3}
+.pet--playful{animation:pet-hop .48s steps(2,end) 3}\n.pet--delighted .pet__body{animation:pet-hop .48s steps(2,end) 2}\n.pet--delighted .pet__cheeks{opacity:1}
 .pet--capybara .pet__wave{animation:capy-wave .8s steps(2,end) 3}
 .pet--caramelo .pet__tail{animation:dog-tail .35s steps(2,end) 6}
 .pet--axolotl .pet__gills{animation:axo-gills .65s ease-in-out 4}
@@ -210,10 +210,10 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
    $('pet-art').setAttribute('aria-label',pet.name+' virtual');
    $('pet-name-screen').textContent=(state.name||pet.defaultName).toUpperCase();
    const art=$('pet-art');
-   ['capybara','caramelo','axolotl','happy','sad','sleeping','playful'].forEach(c=>art.classList.remove('pet--'+c));
+   ['capybara','caramelo','axolotl','happy','sad','sleeping','playful','delighted'].forEach(c=>art.classList.remove('pet--'+c));
    art.classList.add('pet--'+state.species);
    if(state.sleeping)art.classList.add('pet--sleeping');
-   else if(reaction==='playful')art.classList.add('pet--playful','pet--happy');
+   else if(reaction==='playful')art.classList.add('pet--playful','pet--happy');\n   else if(reaction==='delighted')art.classList.add('pet--delighted','pet--happy');
    else if(state.happy<30||state.hunger<25||state.clean<20)art.classList.add('pet--sad');
    else if(state.happy>70)art.classList.add('pet--happy');
   }
@@ -245,13 +245,13 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
   reaction='';
   if(state.sleeping&&actions[menu]!=='DORMIR'){message('Shhh... está dormindo! Use DORMIR para acordar.');return}
   switch(actions[menu]){
-   case 'COMIDA':state.hunger=clamp(state.hunger+28);state.happy=clamp(state.happy+4);message('NHAM! Que delícia! 🍎');break;
+   case 'COMIDA':state.hunger=clamp(state.hunger+28);state.happy=clamp(state.happy+4);reaction='delighted';message('NHAM! Que delícia! 🍎');break;
    case 'BRINCAR':if(state.energy<12){message('Estou cansadinho... preciso dormir!');return}state.happy=clamp(state.happy+24);state.energy=clamp(state.energy-13);state.hunger=clamp(state.hunger-5);reaction='playful';message('Oba! Adoro brincar! ★');break;
-   case 'BANHO':state.clean=clamp(state.clean+35);state.happy=clamp(state.happy+5);message('Splish splash! Fiquei limpinho!');break;
-   case 'DORMIR':state.sleeping=!state.sleeping;message(state.sleeping?'Boa noite, bons sonhos! Zzz...':'Bom dia! Que soninho gostoso.');break;
+   case 'BANHO':state.clean=clamp(state.clean+35);state.happy=clamp(state.happy+5);reaction='delighted';message('Splish splash! Fiquei limpinho!');break;
+   case 'DORMIR':state.sleeping=!state.sleeping;if(!state.sleeping)reaction='delighted';message(state.sleeping?'Boa noite, bons sonhos! Zzz...':'Bom dia! Que soninho gostoso.');break;
   }
   save();render();
-  if(reaction==='playful')window.setTimeout(()=>{reaction='';render()},1550);
+  if(reaction)window.setTimeout(()=>{reaction='';render()},1550);
  }
 
  document.querySelectorAll('[data-species]').forEach(button=>button.addEventListener('click',()=>{
