@@ -132,7 +132,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
  const defaults={name:'',species:null,color:'#e94c54',hunger:78,happy:78,clean:82,energy:82,createdAt:Date.now(),lastAt:Date.now(),sleeping:false,clockMode:false};
  let state;
  try{state={...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){state={...defaults}}
- let menu=0; const actions=['COMIDA','BRINCAR','BANHO','DORMIR'];
+ let menu=0, choosingSpecies=!state.species; const actions=['COMIDA','BRINCAR','BANHO','DORMIR'];
  const species={
   capybara:{name:'Capivara',defaultName:'Capi',art:`<g fill="#a9673f" stroke="#593c31" stroke-width="5" stroke-linejoin="round"><ellipse cx="80" cy="88" rx="53" ry="43"/><ellipse cx="80" cy="55" rx="43" ry="36"/><path d="M48 34 Q37 12 28 29 L34 49 M112 34 Q123 12 132 29 L126 49" fill="#a9673f"/><ellipse cx="80" cy="70" rx="27" ry="19" fill="#754a36"/><path d="M58 122 L53 133 L73 133 L77 119 M103 122 L107 133 L127 133 L119 119" /></g><g fill="#241f20"><circle cx="64" cy="54" r="5"/><circle cx="96" cy="54" r="5"/><ellipse cx="72" cy="69" rx="4" ry="3"/><ellipse cx="88" cy="69" rx="4" ry="3"/></g><path d="M74 83 Q80 88 86 83" fill="none" stroke="#593c31" stroke-width="3" stroke-linecap="round"/><path d="M28 78 Q9 62 14 48 Q22 45 28 61" fill="none" stroke="#a9673f" stroke-width="11" stroke-linecap="round"/>`},
   caramelo:{name:'Caramelo',defaultName:'Caramelo',art:`<g fill="#c98238" stroke="#5a392a" stroke-width="5" stroke-linejoin="round"><ellipse cx="80" cy="91" rx="48" ry="39"/><circle cx="80" cy="49" r="39"/><path d="M48 29 Q20 2 23 42 Q26 61 51 55 M112 29 Q140 2 137 42 Q134 61 109 55"/><path d="M48 112 L45 133 L64 133 L68 117 M92 117 L96 133 L115 133 L112 112"/><path d="M121 91 Q147 83 145 59" fill="none" stroke="#5a392a" stroke-width="9" stroke-linecap="round"/></g><g fill="#201d1b"><circle cx="66" cy="47" r="5"/><circle cx="94" cy="47" r="5"/><ellipse cx="80" cy="65" rx="12" ry="9"/></g><path d="M73 79 Q80 88 87 79" fill="none" stroke="#5a392a" stroke-width="3" stroke-linecap="round"/><path d="M75 69 Q80 73 85 69" fill="none" stroke="#fff" stroke-width="2"/>`},
@@ -148,10 +148,10 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
  function message(t){$('message').textContent=t}
  function render(){
   const adopted=!!(state.species&&species[state.species]);
-  $('adoption').hidden=adopted;
-  $('device').hidden=!adopted;
-  $('settings-panel').hidden=!adopted;
-  $('care-panel').hidden=!adopted;
+  $('adoption').hidden=adopted&&!choosingSpecies;
+  $('device').hidden=!adopted||choosingSpecies;
+  $('settings-panel').hidden=!adopted||choosingSpecies;
+  $('care-panel').hidden=!adopted||choosingSpecies;
   if(adopted){
    const pet=species[state.species];
    $('pet-art').innerHTML=pet.art;
@@ -197,12 +197,12 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
   const chosen=button.dataset.species, firstAdoption=!state.species;
   if(!species[chosen])return;
   const previousName=state.name;
-  state.species=chosen;
+  state.species=chosen;choosingSpecies=false;
   if(firstAdoption||!previousName||previousName==='Dino')state.name=species[chosen].defaultName;
   state.sleeping=false;state.clockMode=false;
   save();message('Que alegria! Temos um novo companheirinho! ♡');render();
  }));
- $('change-pet').addEventListener('click',()=>{$('adoption').hidden=false;$('device').hidden=true;$('settings-panel').hidden=true;$('care-panel').hidden=true;});
+ $('change-pet').addEventListener('click',()=>{choosingSpecies=true;render();});
  $('prev').addEventListener('click',()=>{menu=(menu+actions.length-1)%actions.length;render()});
  $('next').addEventListener('click',()=>{menu=(menu+1)%actions.length;render()});
  $('enter').addEventListener('click',act);
