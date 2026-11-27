@@ -219,9 +219,10 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
    $('pet-art').setAttribute('aria-label',pet.name+' virtual');
    $('pet-name-screen').textContent=(state.name||pet.defaultName).toUpperCase();
    const art=$('pet-art');
-   ['capybara','caramelo','axolotl','happy','sad','sleeping','playful','delighted','greeting','greeted'].forEach(c=>art.classList.remove('pet--'+c));
+   ['capybara','caramelo','axolotl','happy','sad','sleeping','playful','delighted'].forEach(c=>art.classList.remove('pet--'+c));
    art.classList.add('pet--'+state.species);
-   if(state.species==='capybara')art.classList.add(greetingActive?'pet--greeting':'pet--greeted');
+   art.classList.toggle('pet--greeting',state.species==='capybara'&&greetingActive);
+   art.classList.toggle('pet--greeted',state.species==='capybara'&&!greetingActive);
    if(state.sleeping)art.classList.add('pet--sleeping');
    else if(reaction==='playful')art.classList.add('pet--playful','pet--happy');
    else if(reaction==='delighted')art.classList.add('pet--delighted','pet--happy');
