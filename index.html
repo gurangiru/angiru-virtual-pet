@@ -216,7 +216,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #684b86;outline-offse
  function personalityMessage(action){
   const lines={
    capybara:{COMIDA:'Hmmm... comidinha gostosa. Obrigada! 🌿',BRINCAR:'Adoro passear pertinho de você. ♡',BANHO:'Um banho bem calminho... que delícia!',DORMIR:state.sleeping?'Hora de descansar juntinhos. Zzz...':'Que bom acordar e encontrar você! ♡'},
-   caramelo:{COMIDA:'AU! Que comidinha boa! 🦴',BRINCAR:'BORA! BORA BRINCAR! AU AU! ★',BANHO:'Até gosto de água... splash!',DORMIR:state.sleeping:'Au... boa noite! Vou sonhar com bolinhas.':'Acordei! Tem brincadeira?'},
+   caramelo:{COMIDA:'AU! Que comidinha boa! 🦴',BRINCAR:'BORA! BORA BRINCAR! AU AU! ★',BANHO:'Até gosto de água... splash!',DORMIR:state.sleeping?'Au... boa noite! Vou sonhar com bolinhas.':'Acordei! Tem brincadeira?'},
    axolotl:{COMIDA:'NHAC! Que descoberta deliciosa! 🫧',BRINCAR:'O que será que acontece se eu...?',BANHO:'Água por todo lado! Meu lugar favorito! 🫧',DORMIR:state.sleeping?'Vou flutuar nos meus sonhos... Zzz.':'Oi! Sonhei com bolhinhas!'}
   };
   return (lines[state.species]||{})[action]||'Que alegria estar com você! ♡';
